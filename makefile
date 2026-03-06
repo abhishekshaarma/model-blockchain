@@ -1,16 +1,24 @@
-CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Iincludes
-SRC = main.cpp src/Block.cpp src/BlockChain.cpp src/TransactionData.cpp
-OBJ = $(SRC:.cpp=.o)
-TARGET = blockchain
+CXX := g++
+CXXFLAGS := -std=c++17 -Wall -Wextra -Iincludes
+LDFLAGS := -lssl -lcrypto
+TARGET := blockchain
+
+SRC := main.cpp \
+       src/Block.cpp \
+       src/BlockChain.cpp \
+       src/TransactionData.cpp
+
+OBJ := $(SRC:.cpp=.o)
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CXX) $(OBJ) -o $(TARGET)
+	$(CXX) $(OBJ) $(LDFLAGS) -o $(TARGET)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	del /Q *.o src\*.o blockchain.exe 2>nul || rm -f *.o src/*.o $(TARGET)
+	rm -f $(OBJ) $(TARGET)
+
+.PHONY: all clean
