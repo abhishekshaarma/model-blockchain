@@ -1,24 +1,17 @@
-CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -Iincludes
-LDFLAGS := -lssl -lcrypto
-TARGET := blockchain
+CXX      = g++
+CXXFLAGS = -std=c++17 -Wall -O2
+LIBS     = -lssl -lcrypto
 
-SRC := main.cpp \
-       src/Block.cpp \
-       src/BlockChain.cpp \
-       src/TransactionData.cpp
+# Part 1 -- benchmark binary
+bench: main_bench.cpp
+	$(CXX) $(CXXFLAGS) mainbench.cpp -o bench $(LIBS)
 
-OBJ := $(SRC:.cpp=.o)
+# Part 2 -- blockchain demo binary
+chain: main_chain.cpp
+	$(CXX) $(CXXFLAGS) mainchain.cpp -o chain $(LIBS)
 
-all: $(TARGET)
-
-$(TARGET): $(OBJ)
-	$(CXX) $(OBJ) $(LDFLAGS) -o $(TARGET)
-
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+# build both
+all: bench chain
 
 clean:
-	rm -f $(OBJ) $(TARGET)
-
-.PHONY: all clean
+	rm -f bench chain
